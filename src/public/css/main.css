@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+/* header */
+header{padding:4px 0px; background-color:rgba(0,0,0,0.15);}
+header > h1{font-size:25px; color:#fff; text-align:center;}
+
+/* container */
+.container{background-color:#0079bf; min-height:100vh;}
+.content{display:flex; height:calc(100% - 41px); flex-wrap: nowrap; font-size: 0; overflow-x : auto;}
+.content > div{width:250px; margin:10px 5px; flex: 0 0 auto;}
+.content > div:first-child{margin-left: 10px;}
+.content > div:last-child{margin-right: 10px;}
+
+/* 리스트 추가 el */
+.add-list{padding:5px; background-color:rgba(255,255,255,0.15); border-radius:3px; cursor:pointer; box-sizing:border-box; transition:background-color 0.1s ease;}
+.add-list:not(.active):hover{background-color:rgba(255,255,255,0.3);}
+.add-list > form{width:100%;}
+.add-list .open-add-list{display:inline-block; width:100%; padding:3px; box-sizing: border-box;}
+.add-list .open-add-list > span{font-size:15px; color :#fff; text-align:left;}
+.add-list .list-name-input{display:none; width: 100%; margin-bottom: 4px; padding:6px; font-size: 15px; border:2px solid #0066a0; border-radius: 3px;}
+.add-list .list-add-controls{display:none;}
+
+.add-list.active{background-color: #e2e2e2; cursor: default;}
+.add-list.active .open-add-list{display: none;}
+.add-list.active .list-name-input{display: block;}
+.add-list.active .list-add-controls{display: block;}
+.list-add-controls .list-add-button{margin-right: 5px; padding:8px; font-size: 15px; color:#fff; background-color: #0066a0; border-radius: 3px; cursor: pointer;}
+.list-add-controls .list-cancel-button{padding:8px; font-size:15px; font-weight: bold; color:#000;}
+
+/* list-wrapper */
+.list-wrapper{}
+.list-inner{background-color:#e2e2e2; border-radius:3px;} 
+.list-header{padding:10px 10px 7px 10px; font-size: 15px; color:#000;}
+.list-body{padding:7px 10px 10px 10px;}
+
+.list-cards{}
+.list-cards > li{min-width: 100%; min-height: 30px; margin-bottom: 7px; background-color: #696969; border-radius:3px;}
+.list-cards > li > span{display:inline-block; width: 100%; padding:5px; font-size:15px; background-color:#f6f6f6; border-radius:3px; cursor: pointer; box-sizing: border-box;}
+.list-cards > li > span:hover{background-color:#ebebeb;}
+
+/* 리스트 내부 카드 추가 el */
+.add-card{border-radius:3px; cursor:pointer; box-sizing:border-box; transition:background-color 0.1s ease;}
+.add-card:not(.active):hover{background-color:rgba(0,0,0,0.10);}
+.add-card > form{width:100%;}
+.add-card .open-add-card{display:inline-block; width:100%; padding:3px;}
+.add-card .open-add-card > span{font-size:15px; color:#696969; text-align:left;}
+.add-card .card-name-input{display:none; width: 100%; margin-bottom: 4px; padding:6px; font-size: 15px; border:2px solid #0066a0; border-radius: 3px;}
+.add-card .card-add-controls{display:none;}
+
+.add-card.active{cursor: default;}
+.add-card.active .open-add-card{display: none;}
+.add-card.active .card-name-input{display: block;}
+.add-card.active .card-add-controls{display: block;}
+.card-add-controls .card-add-button{margin-right: 5px; padding:8px; font-size: 15px; color:#fff; background-color: #0066a0; border-radius: 3px; cursor: pointer;}
+.card-add-controls .card-cancel-button{padding:8px; font-size:15px; font-weight: bold; color:#000;}
