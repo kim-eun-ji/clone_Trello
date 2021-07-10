@@ -1,59 +1,71 @@
-const ListController = {
+
+const trelloController = {
+  cardIdNum : 0,
   lists: null,
-  addBox: null,
-  closeBtn: null,
-
-  init: function (lists) {
-    this.lists = lists;
-    this.addBox = document.getElementsByClassName('add-list')[0];
-    this.closeBtn = document.getElementsByClassName('list-cancel-button')[0];
-
+  listCreator: null,
+  
+  init: function (lists) { 
+    this.lists = lists ? lists : [];
+    this.listCreator = document.getElementsByClassName('add-list')[0];
+    
     this.registEvent();
+  }, 
+  
+  registEvent: function () { 
+    const _this = this;
+
+    // add list 관련
+    _this.onToggleListCreator();
+    _this.listCreator.querySelector('.list-add-button').addEventListener("click", function (e) { 
+      e.preventDefault();
+      _this.createList();
+    }.bind(_this));
   },
-  registEvent: function () {
+
+  onToggleListCreator: function () { 
     const _this = this;
     const body = document.getElementsByTagName('body')[0];
 
     // 모달 오픈
-    _this.addBox.addEventListener("click", function (e) {
+    _this.listCreator.addEventListener("click", function (e) {
       e.stopPropagation();
-      _this.openModal();
-    }.bind(_this));
+      this.classList.add('active');
+    });
 
     // 모달 닫음
-    _this.closeBtn.addEventListener("click", function (e) {
+    _this.listCreator.querySelector('.list-cancel-button').addEventListener("click", function (e) {
       e.stopPropagation();
-      _this.closeModal();
-    }.bind(_this));
+      _this.listCreator.classList.remove('active');
+    });
 
     // 모달 외 영역 클릭 시 모달 닫음
     body.addEventListener("click", function (e) {
       if (!e.target.classList.contains('add-list')) {
         e.stopPropagation();
-        _this.closeModal();
+        _this.listCreator.classList.remove('active');
       }
-    }.bind(_this));
-
+    });
   },
-  render: function () {
 
+  createList: function () { 
+    const _this = this;
+    const input = _this.listCreator.getElementsByClassName('list-name-input')[0];
+    const len = _this.lists.length;
+    const val = input.value;
+
+    input.value = '';
+    _this.lists.push(new List('list' + len, val));
   },
-  add: function () {
 
+  // 카드는 리스트간 이동이 가능하므로 단순히 length로 체크하지 않는다.
+  getCardId: function () { 
+    const _this = this;
+    const id = 'card' + this.cardIdNum++;
+
+    return id;
   },
-  openModal: function () {
-    this.addBox.classList.add('active');
-  },
-  closeModal: function () {
-    this.addBox.classList.remove('active');
-  }
-
-}
-
-const cardController = {
-
 }
 
 window.onload = function () {
-  ListController.init([]);
+  trelloController.init();
 }
