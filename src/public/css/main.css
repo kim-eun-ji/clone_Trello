@@ -34,9 +34,10 @@ header > h1{font-size:25px; color:#fff; text-align:center;}
 .list-body{padding:7px 10px 10px 10px;}
 
 .list-cards{}
-.list-cards > li{min-width: 100%; min-height: 30px; margin-bottom: 7px; background-color: #696969; border-radius:3px;}
-.list-cards > li > span{display:inline-block; width: 100%; padding:5px; font-size:15px; background-color:#f6f6f6; border-radius:3px; cursor: pointer; box-sizing: border-box;}
-.list-cards > li > span:hover{background-color:#ebebeb;}
+.list-cards > li{min-width: 100%; min-height: 30px; padding:5px; font-size:15px; margin-bottom: 7px; background-color: #f6f6f6; border-radius:3px; cursor: pointer; box-sizing: border-box;}
+.list-cards > li:hover{background-color:#ebebeb;}
+/* .list-cards > li > span{display:inline-block; width: 100%; padding:5px; font-size:15px; background-color:#f6f6f6; border-radius:3px; cursor: pointer; box-sizing: border-box;} */
+/* .list-cards > li > span:hover{background-color:#ebebeb;} */
 
 /* 리스트 내부 카드 추가 el */
 .add-card{border-radius:3px; cursor:pointer; box-sizing:border-box; transition:background-color 0.1s ease;}

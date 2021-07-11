@@ -3,14 +3,21 @@ const trelloController = {
   cardIdNum : 0,
   lists: null,
   listCreator: null,
-  
+  dragCard: null,
+
   init: function (lists) { 
-    this.lists = lists ? lists : [];
+    this.lists = lists ? lists : {};
     this.listCreator = document.getElementsByClassName('add-list')[0];
     
+    // this.render();
     this.registEvent();
-  }, 
+  },
   
+  render: function () { 
+    // 1. this.lists for문 node 붙이고
+    // 2. 해당 list.cards 돌면서 node 붙이기
+  },
+
   registEvent: function () { 
     const _this = this;
 
@@ -30,12 +37,14 @@ const trelloController = {
     _this.listCreator.addEventListener("click", function (e) {
       e.stopPropagation();
       this.classList.add('active');
+      this.getElementsByClassName('list-name-input')[0].focus();
     });
 
     // 모달 닫음
     _this.listCreator.querySelector('.list-cancel-button').addEventListener("click", function (e) {
       e.stopPropagation();
       _this.listCreator.classList.remove('active');
+      _this.listCreator.getElementsByClassName('list-name-input')[0].value = '';
     });
 
     // 모달 외 영역 클릭 시 모달 닫음
@@ -43,6 +52,7 @@ const trelloController = {
       if (!e.target.classList.contains('add-list')) {
         e.stopPropagation();
         _this.listCreator.classList.remove('active');
+        _this.listCreator.getElementsByClassName('list-name-input')[0].value = '';
       }
     });
   },
@@ -50,11 +60,13 @@ const trelloController = {
   createList: function () { 
     const _this = this;
     const input = _this.listCreator.getElementsByClassName('list-name-input')[0];
-    const len = _this.lists.length;
+    const id = 'list' + Object.keys(_this.lists).length;
     const val = input.value;
+    
+    if (!val) return false;
 
     input.value = '';
-    _this.lists.push(new List('list' + len, val));
+    _this.lists[id] = new List(id, val);
   },
 
   // 카드는 리스트간 이동이 가능하므로 단순히 length로 체크하지 않는다.

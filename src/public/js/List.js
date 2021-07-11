@@ -13,6 +13,9 @@ class List {
       e.preventDefault();
       _this.createCard();
     }.bind(_this));
+
+    // drag card to empty list evnet
+    this.node.addEventListener("dragenter", this.onDragEnter);
   }
 
   create(text) { 
@@ -26,7 +29,7 @@ class List {
       '<div class="list-header">' + text + '</div>' +
       '<div class="list-body">' +
       '<ul class="list-cards"></ul>' +
-      '<div class="add-card"><form action="">' +
+      '<div class="add-card" ondragstart="return false"><form action="">' +
       '<a class="open-add-card" href="#"><span>+ Add another card</span></a>' +
       '<input class="card-name-input" type="text" name="name" placeholder="Enter card title" autocomplete="off" maxlength="512">' +
       '<div class="card-add-controls">' +
@@ -48,12 +51,14 @@ class List {
     _this.cardCreator.addEventListener("click", function (e) {
       e.stopPropagation();
       this.classList.add('active');
+      this.getElementsByClassName('card-name-input')[0].focus();
     });
 
     // 모달 닫음
     _this.cardCreator.querySelector('.card-cancel-button').addEventListener("click", function (e) {
       e.stopPropagation();
       _this.cardCreator.classList.remove('active');
+      _this.cardCreator.getElementsByClassName('card-name-input')[0].value = '';
     });
 
     // 모달 외 영역 클릭 시 모달 닫음
@@ -61,6 +66,7 @@ class List {
       if (!e.target.classList.contains('add-card')) {
         e.stopPropagation();
         _this.cardCreator.classList.remove('active');
+        _this.cardCreator.getElementsByClassName('card-name-input')[0].value = '';
       }
     });
   }
@@ -69,10 +75,46 @@ class List {
     const _this = this;
     const input = _this.cardCreator.getElementsByClassName('card-name-input')[0];
     const id = trelloController.getCardId();
+    const idx = Object.keys(_this.cards).length;
     const val = input.value;
 
+    if (!val) return false;
+
     input.value = '';
-    _this.cards[id] = new Card(_this.node, id, val);
+    _this.cards[id] = new Card(_this.node, id, val, idx);
   }
 
-}
+  indexing() {
+    const _this = this;
+    const cards = _this.node.querySelector('.list-cards').children;
+    for (let i = 0; i < cards.length; i++){
+      _this.cards[cards[i].id].index = i;
+    }
+
+  }
+
+  onDragEnter(e) { 
+    e.preventDefault();
+
+    // 카드가 하나도 없는 리스트에 카드를 추가할 경우
+    if (e.target.classList.contains('list-body') && e.target.querySelectorAll('ul.list-cards > li').length === 0) {
+      const dragCard = trelloController.dragCard;
+      const dragNode = trelloController.lists[dragCard.closest('.list-wrapper').id].cards[dragCard.id];
+      const nowListId = e.target.closest('.list-wrapper').id;
+
+      // 1. 리스트에 카드 추가
+      dragNode.node.remove();
+      e.target.querySelector('ul.list-cards').appendChild(dragNode.node);
+
+      // 2. 순서 변동사항 반영
+      delete trelloController.lists[dragNode.list.id].cards[dragNode.id];
+      trelloController.lists[nowListId].cards[dragNode.id] = dragNode;
+      trelloController.lists[dragNode.list.id].indexing();
+      
+      if (dragNode.list.id !== nowListId) {
+        dragNode.list = trelloController.lists[nowListId].node;
+        trelloController.lists[nowListId].indexing();   
+      }
+    }
+  }
+} 
