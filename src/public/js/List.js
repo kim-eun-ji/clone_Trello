@@ -4,12 +4,13 @@ class List {
 
     this.id = id;
     this.node = this.create(text);
+    this.title = text;
     this.cardCreator = this.node.querySelector('.add-card');
     this.cards = {};
 
     // add card 관련
     this.onToggleCardCreator();
-    this.cardCreator.querySelector('.card-add-button').addEventListener("click", function (e) { 
+    this.cardCreator.querySelector('.card-add-button').addEventListener("click", function (e) {
       e.preventDefault();
       _this.createCard();
     }.bind(_this));
@@ -18,7 +19,7 @@ class List {
     this.node.addEventListener("dragenter", this.onDragEnter);
   }
 
-  create(text) { 
+  create(text) {
     const parent = document.getElementsByClassName('content')[0];
     const list = document.createElement('div');
     list.id = this.id;
@@ -38,12 +39,12 @@ class List {
       '</div>' +
       '</form></div>' +
       '</div>';
-    
+
     parent.insertBefore(list, parent.firstChild);
     return list;
   }
 
-  onToggleCardCreator() { 
+  onToggleCardCreator() {
     const _this = this;
     const body = document.getElementsByTagName('body')[0];
 
@@ -71,35 +72,37 @@ class List {
     });
   }
 
-  createCard() { 
+  createCard(_id, _val, sendMsg = true) {
     const _this = this;
     const input = _this.cardCreator.getElementsByClassName('card-name-input')[0];
-    const id = trelloController.getCardId();
+    const id = _id ? _id : TrelloController.getCardId();
     const idx = Object.keys(_this.cards).length;
-    const val = input.value;
+    const val = _val ? _val : input.value;
 
     if (!val) return false;
 
     input.value = '';
     _this.cards[id] = new Card(_this.node, id, val, idx);
+
+    if (sendMsg) SocketController.sendMessage();
   }
 
   indexing() {
     const _this = this;
     const cards = _this.node.querySelector('.list-cards').children;
-    for (let i = 0; i < cards.length; i++){
+    for (let i = 0; i < cards.length; i++) {
       _this.cards[cards[i].id].index = i;
     }
 
   }
 
-  onDragEnter(e) { 
+  onDragEnter(e) {
     e.preventDefault();
 
     // 카드가 하나도 없는 리스트에 카드를 추가할 경우
     if (e.target.classList.contains('list-body') && e.target.querySelectorAll('ul.list-cards > li').length === 0) {
-      const dragCard = trelloController.dragCard;
-      const dragNode = trelloController.lists[dragCard.closest('.list-wrapper').id].cards[dragCard.id];
+      const dragCard = TrelloController.dragCard;
+      const dragNode = TrelloController.lists[dragCard.closest('.list-wrapper').id].cards[dragCard.id];
       const nowListId = e.target.closest('.list-wrapper').id;
 
       // 1. 리스트에 카드 추가
@@ -107,13 +110,13 @@ class List {
       e.target.querySelector('ul.list-cards').appendChild(dragNode.node);
 
       // 2. 순서 변동사항 반영
-      delete trelloController.lists[dragNode.list.id].cards[dragNode.id];
-      trelloController.lists[nowListId].cards[dragNode.id] = dragNode;
-      trelloController.lists[dragNode.list.id].indexing();
-      
+      delete TrelloController.lists[dragNode.list.id].cards[dragNode.id];
+      TrelloController.lists[nowListId].cards[dragNode.id] = dragNode;
+      TrelloController.lists[dragNode.list.id].indexing();
+
       if (dragNode.list.id !== nowListId) {
-        dragNode.list = trelloController.lists[nowListId].node;
-        trelloController.lists[nowListId].indexing();   
+        dragNode.list = TrelloController.lists[nowListId].node;
+        TrelloController.lists[nowListId].indexing();
       }
     }
   }
