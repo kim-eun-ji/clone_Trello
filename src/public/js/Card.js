@@ -52,7 +52,7 @@ class Card {
     if (nowNode.id !== dragNode.id) {
       // 1. 현재 드래그중인 카드 삭제 -> 드래그 오버중인 카드뒤에 넣음
       dragNode.node.remove();
-      if (nowNode.index === 0) {
+      if (nowNode.index < dragNode.index) {
         nowNode.list.querySelector('ul.list-cards').insertBefore(dragNode.node, nowNode.node);
       } else {
         nowNode.list.querySelector('ul.list-cards').insertBefore(dragNode.node, nowNode.node.nextSibling);
