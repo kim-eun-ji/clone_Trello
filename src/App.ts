@@ -1,13 +1,14 @@
 import express from 'express';
-import { createServer } from "http";
+import { createServer, Server } from "http";
+import * as socketio from 'socket.io';
 import path from "path";
 import router from "./routes";
 
 class App {
   private app: express.Application;
-  private server;
+  private server: Server;
   private port: number;
-  private io;
+  private io: socketio.Socket;
   private lists;
 
   constructor(port: number) {
@@ -15,6 +16,7 @@ class App {
     this.port = port;
     this.server = createServer(this.app);
     this.io = require('socket.io')(this.server);
+
     this.connetion();
     this.applyMiddlewares();
     this.applyRouter();
