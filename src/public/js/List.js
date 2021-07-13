@@ -17,6 +17,7 @@ class List {
 
     // drag card to empty list evnet
     this.node.addEventListener("dragenter", this.onDragEnter);
+    this.node.addEventListener("dragend", this.onDragEnd);
   }
 
   create(text) {
@@ -114,10 +115,15 @@ class List {
       TrelloController.lists[nowListId].cards[dragNode.id] = dragNode;
       TrelloController.lists[dragNode.list.id].indexing();
 
+      // 3. 카드가 다른 리스트로 이동했을 경우 그 리스트도 인덱싱
       if (dragNode.list.id !== nowListId) {
         dragNode.list = TrelloController.lists[nowListId].node;
         TrelloController.lists[nowListId].indexing();
       }
     }
   }
-} 
+
+  onDragEnd(e) {
+    SocketController.sendMessage();
+  }
+}

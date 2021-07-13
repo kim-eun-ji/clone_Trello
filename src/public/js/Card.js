@@ -10,7 +10,6 @@ class Card {
     this.node.addEventListener("dragstart", this.onDragStart);
     this.node.addEventListener("dragover", this.onDragOver);
     this.node.addEventListener("dragenter", this.onDragEnter);
-    this.node.addEventListener("drop", this.onDrop);
     this.node.addEventListener("dragend", this.onDragEnd);
   }
 
@@ -38,6 +37,7 @@ class Card {
   onDragEnd(e) {
     TrelloController.dragCard = null;
     e.target.style.backgroundColor = '';
+    SocketController.sendMessage();
   }
 
   onDragEnter(e) {
@@ -63,17 +63,13 @@ class Card {
       TrelloController.lists[nowNode.list.id].cards[dragNode.id] = dragNode;
       TrelloController.lists[dragNode.list.id].indexing();
 
+      // 3. 카드가 다른 리스트로 이동했을 경우 그 리스트도 인덱싱
       if (dragNode.list.id !== nowNode.list.id) {
         dragNode.list = nowNode.list;
         TrelloController.lists[nowNode.list.id].indexing();
       }
     }
 
-  }
-
-  onDrop(e) {
-    e.target.style.backgroundColor = '';
-    SocketController.sendMessage();
   }
 
 }
